@@ -24,13 +24,13 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore FCG.FiapCloudGames.sln
+        run: dotnet restore FCG.Users.sln
 
       - name: Build
-        run: dotnet build FCG.FiapCloudGames.sln --configuration Release --no-restore
+        run: dotnet build FCG.Users.sln --configuration Release --no-restore
 
       - name: Unit Tests with Coverage
-        run: dotnet test FCG.FiapCloudGames.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        run: dotnet test FCG.Users.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
         
       - name: Login to Azure Container Registry
         run: echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login acrfcg.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
