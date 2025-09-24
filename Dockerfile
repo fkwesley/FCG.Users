@@ -15,7 +15,7 @@ RUN dotnet restore FCG.Users.sln
 RUN dotnet build FCG.Users.sln -c Release --no-restore
 
 # Publish the application
-RUN dotnet publish FCG.API/FCG.API.csproj -c Release -o /app/publish --no-restore
+RUN dotnet publish API/API.csproj -c Release -o /app/publish --no-restore
 
 # Stage 2 - Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
@@ -44,4 +44,4 @@ ENV CORECLR_ENABLE_PROFILING=1 \
 COPY --from=build /app/publish .
 
 # Set the entry point of the application
-ENTRYPOINT ["dotnet", "FCG.API.dll"]
+ENTRYPOINT ["dotnet", "API.dll"]
