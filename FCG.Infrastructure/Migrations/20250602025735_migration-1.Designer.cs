@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FCG.Infrastructure.Migrations
 {
-    [DbContext(typeof(FiapCloudGamesDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20250602025735_migration-1")]
     partial class migration1
     {

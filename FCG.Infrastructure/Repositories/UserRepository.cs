@@ -7,7 +7,7 @@ namespace FCG.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly FiapCloudGamesDbContext _context;
+        private readonly UsersDbContext _context;
 
         public IEnumerable<User> GetAllUsers()
         {
@@ -19,7 +19,7 @@ namespace FCG.Infrastructure.Repositories
             return _context.Users.FirstOrDefault(g => g.UserId == userId);
         }
 
-        public UserRepository(FiapCloudGamesDbContext context)
+        public UserRepository(UsersDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }

@@ -6,10 +6,10 @@ namespace FCG.Infrastructure.Repositories
 {
     public class LoggerRepository : ILoggerRepository
     {
-        private readonly FiapCloudGamesDbContext _context;
+        private readonly UsersDbContext _context;
 
         // Injeta o DbContext via construtor
-        public LoggerRepository(FiapCloudGamesDbContext context)
+        public LoggerRepository(UsersDbContext context)
         {
             _context = context;
         }

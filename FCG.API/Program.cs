@@ -138,7 +138,7 @@ builder.Services.AddScoped<ILoggerRepository, LoggerRepository>();
 builder.Services.AddScoped<INewRelicLoggerRepository, NewRelicLoggerRepository>();
 
 // Register the DbContext with dependency injection
-builder.Services.AddDbContext<FiapCloudGamesDbContext>(options =>
+builder.Services.AddDbContext<UsersDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 }, ServiceLifetime.Scoped);

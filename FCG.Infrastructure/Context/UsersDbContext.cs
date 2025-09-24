@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FCG.Infrastructure.Context
 {
-    public class FiapCloudGamesDbContext : DbContext
+    public class UsersDbContext : DbContext
     {
         private readonly string _connectionString;
 
-        public FiapCloudGamesDbContext(DbContextOptions<FiapCloudGamesDbContext> options) : base(options)
+        public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options)
         {
         }
 
@@ -27,7 +27,7 @@ namespace FCG.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Apply configurations from the assembly
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(FiapCloudGamesDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersDbContext).Assembly);
 
             // Alternatively, you can apply configurations explicitly if needed
             //modelBuilder.ApplyConfiguration(new GameConfiguration());

@@ -90,7 +90,7 @@ namespace FCG.Infrastructure.Migrations
 
             //Password1*
             migrationBuilder.Sql(@"
-                INSERT INTO [FiapCloudGamesDb].[dbo].[User] 
+                INSERT INTO [FCG.UsersDB].[dbo].[User] 
                     (UserId, Name, Email, PasswordHash, IsAdmin, IsActive, CreatedAt)
                 VALUES 
                 (

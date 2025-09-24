@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FCG.Infrastructure.Migrations
 {
-    [DbContext(typeof(FiapCloudGamesDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     partial class FiapCloudGamesDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
