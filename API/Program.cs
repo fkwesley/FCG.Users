@@ -26,8 +26,8 @@ var configuration = new ConfigurationBuilder()
 var jwtKey = configuration["Jwt:Key"];
 var jwtIssuer = configuration["Jwt:Issuer"];
 
-var connectionString = configuration.GetConnectionString("FiapCloudGamesDbConnection")
-                            ?? throw new ArgumentNullException("Connection string 'FiapCloudGamesDbConnection' not found.");
+var connectionString = configuration.GetConnectionString("FCG.UsersDbConnection")
+                            ?? throw new ArgumentNullException("Connection string 'FCG.UsersDbConnection' not found.");
 
 builder.Services.Configure<ExternalLoggerSettings>(builder.Configuration.GetSection("NewRelic"));
 #endregion
