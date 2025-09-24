@@ -9,10 +9,10 @@ WORKDIR /app
 COPY . .
 
 # Restore NuGet packages
-RUN dotnet restore FCG.FiapCloudGames.sln
+RUN dotnet restore FCG.Users.sln
 
 # Build the application in Release mode
-RUN dotnet build FCG.FiapCloudGames.sln -c Release --no-restore
+RUN dotnet build FCG.Users.sln -c Release --no-restore
 
 # Publish the application
 RUN dotnet publish FCG.API/FCG.API.csproj -c Release -o /app/publish --no-restore
