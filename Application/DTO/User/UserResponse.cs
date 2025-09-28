@@ -8,6 +8,7 @@
         public required string PasswordHash { get; set; }
         public bool IsActive { get; set; }
         public bool IsAdmin { get; set; } = false;
+        public bool IsTechAccount { get; set; } = false;
         public required DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }

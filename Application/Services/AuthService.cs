@@ -45,7 +45,7 @@ namespace Application.Services
                 issuer: _issuer,
                 audience: null,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: !user.IsTechAccount ? DateTime.UtcNow.AddHours(1) : null, // token for technical accounts does not expires
                 signingCredentials: creds
             );
 
