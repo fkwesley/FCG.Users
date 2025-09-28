@@ -19,5 +19,6 @@ namespace Application.DTO.User
         [Required]
         public bool IsActive { get; set; }
         public bool IsAdmin { get; set; } = false;
+        public bool IsTechAccount { get; set; } = false;
     }
 }

@@ -4,7 +4,6 @@ using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20250602025735_migration-1")]
-    partial class migration1
+    partial class UsersDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,49 +105,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Trace_log", (string)null);
                 });
 
-            modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.Game", b =>
-                {
-                    b.Property<int>("GameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INT");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Genre")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("Rating")
-                        .HasColumnType("INT");
-
-                    b.Property<DateOnly>("ReleaseDate")
-                        .HasColumnType("DATE");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("GameId");
-
-                    b.ToTable("Game", (string)null);
-                });
-
-            modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.User", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<string>("UserId")
                         .HasMaxLength(20)
@@ -176,6 +131,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsTechAccount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -196,7 +156,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.RequestLog", b =>
                 {
-                    b.HasOne("FCG.FiapCloudGames.Core.Entities.User", "User")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("RequestLogs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -221,7 +181,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Traces");
                 });
 
-            modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.User", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("RequestLogs");
                 });

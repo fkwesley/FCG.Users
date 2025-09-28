@@ -4,6 +4,7 @@ using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    partial class FiapCloudGamesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250928023348_migration_1")]
+    partial class migration_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,7 +108,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Trace_log", (string)null);
                 });
 
-            modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.User", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<string>("UserId")
                         .HasMaxLength(20)
@@ -131,6 +134,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsTechAccount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -151,7 +159,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.RequestLog", b =>
                 {
-                    b.HasOne("FCG.FiapCloudGames.Core.Entities.User", "User")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("RequestLogs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -176,7 +184,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Traces");
                 });
 
-            modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.User", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("RequestLogs");
                 });

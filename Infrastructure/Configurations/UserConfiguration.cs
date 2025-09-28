@@ -18,6 +18,8 @@ namespace Infrastructure.Configurations
             builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(100);
             builder.Property(u => u.IsActive).HasDefaultValue(true);
             builder.Property(u => u.IsAdmin).HasDefaultValue(false);
+            builder.Property(u => u.IsTechAccount).HasDefaultValue(false);
+
             builder.Property(u => u.CreatedAt)
                 .IsRequired()
                 .HasDefaultValueSql("GETDATE()")

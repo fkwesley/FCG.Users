@@ -18,6 +18,7 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsAdmin { get; set; } = false;
+        public bool IsTechAccount { get; set; } = false;
         public ICollection<RequestLog> RequestLogs { get; set; } = new List<RequestLog>();
 
         // Propriedade pública com validação de e-mail no `set`.

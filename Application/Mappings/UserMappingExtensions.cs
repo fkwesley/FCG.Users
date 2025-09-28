@@ -16,7 +16,8 @@ namespace Application.Mappings
                 Name = request.Name.ToUpper(),         
                 Email = request.Email.ToLower(),   
                 IsActive = request.IsActive,   
-                IsAdmin = request.IsAdmin              
+                IsAdmin = request.IsAdmin,
+                IsTechAccount = request.IsTechAccount
             };
         }
 
@@ -31,6 +32,7 @@ namespace Application.Mappings
                 Email = entity.Email,
                 PasswordHash = entity.PasswordHash, // Assuming PasswordHash is the password to be returned
                 IsActive = entity.IsActive,
+                IsTechAccount = entity.IsTechAccount,
                 CreatedAt = DateTimeHelper.ConvertUtcToTimeZone(entity.CreatedAt, "E. South America Standard Time"),
                 UpdatedAt = entity.UpdatedAt.HasValue ? 
                                 DateTimeHelper.ConvertUtcToTimeZone(entity.UpdatedAt.Value, "E. South America Standard Time") : (DateTime?)null,
