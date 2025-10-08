@@ -1,9 +1,10 @@
-﻿# 🎮 FCG.FiapCloudGames.API
+﻿# 🎮 FCG.Users.API
 
-API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados.
+API desenvolvida para gerenciamento de usuários, com foco em micro-serviços e arquitetura orientada a eventos.
 - Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
 - [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
 - [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
+- [Vídeo com a apresentação da Fase 3](https://youtu.be/3OxTOgieuMg)
 
 ## 📌 Objetivo
 
@@ -36,7 +37,18 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
     - Traces no New Relic
     - Logs no New Relic
     - Dashboards de monitoramento (New Relic e Azure)
-
+### **Fase 3:** 
+  - **Migração arquitetura Monolitica x Micro-serviços:**
+    - Separação da API em dois serviços distintos com base nos contextos delimitados (Users, Games, Orders, Payments)
+    - Cada API com seu próprio repositório e infraestrutura (banco de dados, container app e pipeline CI/CD)
+  - **Adoção de soluções Serverless:**
+    - Arquitetura orientada a eventos com comunicação assíncrona via mensageria (Azure Service Bus)
+    - Utilização de Azure Functions como gatilho das mensagens do Service Bus (Tópicos e Subscriptions)
+    - Utilização do Azure API Management para gerenciamento e segurança das APIs com políticas de rate limit e cache
+  - **Otimização na busca de jogos:**
+    - Implementação de ElasticSearch para indexação dos jogos e logs 
+    - Ganho de performance com consultas avançadas
+    - Implementação de filtros, paginação e ordenação, inclusive endpoint de jogos mais bem avaliados
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -53,6 +65,13 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Logger            | Middleware de Request/Response + LogId |
 | Docker            | Multi-stage Dockerfile para build e runtime |
 | Monitoramento     | New Relic (.NET Agent) + Azure |
+| Mensageria        | Azure Service Bus (Tópicos e Subscriptions) |
+| Consumer de Mensagens | Azure Functions                  |
+| Orquestração      | Azure Container Apps             |
+| API Gateway       | Azure API Management             |
+| CI/CD             | GitHub Actions                   |
+| Testes de Carga   | K6                               |
+| ElasticSearch    | Indexação e busca avançada       |
 
 
 ## 🧠 Padrões e Boas Práticas
@@ -74,12 +93,6 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - ✅ Validação de senha forte
 - ✅ Validação de formato de e-mail
 - ✅ Controle de permissões (admin)
-
-### Jogos
-- ✅ Cadastro e listagem de jogos
-- ✅ Validação de campos e tamanho máximo
-- ✅ Validação de gênero permitido
-- ✅ Validação de quantidade mínima de dados enviados
 
 ### Segurança e Middleware
 - ✅ Middleware de erro global
@@ -113,7 +126,7 @@ Siga esses passos para configurar e rodar o projeto localmente:
 ### 
 - Clonar o repositório
   ```bash
-  git clone https://github.com/seu-usuario/fiap-cloud-games.git
+  git clone https://github.com/seu-usuario/FCG.Users.git
   ```
 - Configurar a conexão com o banco de dados no `appsettings.json` ou nas variáveis de ambiente
   ```json
@@ -152,14 +165,14 @@ Siga esses passos para configurar e rodar o projeto localmente:
  ## 📁 Estrutura de Pastas
 
  ```bash
-FCG.FiapCloudGames/
+FCG.Users/
 │
-├── FCG.API/                        # Camada de apresentação (Controllers, Middlewares, Program.cs)
+├── API/                        # Camada de apresentação (Controllers, Middlewares, Program.cs)
 │   ├── Controllers/                # Endpoints REST
 │   ├── Middleware/                 # Tratamento de erros, logs, etc.
 │   └── Program.cs                  # Ponto de entrada da aplicação
 │
-├── FCG.Application/                # Camada de aplicação (DTOs, serviços, interfaces de uso)
+├── Application/                # Camada de aplicação (DTOs, serviços, interfaces de uso)
 │   ├── Interfaces/                 # Interfaces usadas pela API
 │   ├── Services/                   # Serviços que coordenam o domínio
 │   └── DTOs/                       # Objetos de transferência de dados
@@ -168,18 +181,18 @@ FCG.FiapCloudGames/
 │   └── Mappings/                   # Mapeamentos entre DTOs e entidades
 │   └── Settings/                   # Configurações da aplicação
 │
-├── FCG.Domain/                     # Camada de domínio (regra de negócio, entidades, contratos)
+├── Domain/                     # Camada de domínio (regra de negócio, entidades, contratos)
 │   ├── Entities/                   # Entidades como User e Game
 │   ├── Exceptions/                 # Exceções do domínio
 │   ├── Repositories/               # Interfaces dos repositórios (sem dependência de EF)
 │
-├── FCG.Infrastructure/             # Implementações (EF, hashing, repositórios concretos)
+├── Infrastructure/             # Implementações (EF, hashing, repositórios concretos)
 │   ├── Context/                    # DbContext do Entity Framework
 │   ├── Mappings/                   # Configurações de entidades (Fluent API)
 │   ├── Repositories/               # Repositórios que implementam a camada de domínio
 │   └── Migrations/                 # Histórico de migrations geradas
 │
-├── FCG.Tests/                      # Testes automatizados (xUnit)
+├── Tests/                      # Testes automatizados (xUnit)
 │   ├── UnitTests/                  # Testes Unitários
 │       ├── Domain/                 # Testes de entidades, regex e regras
 │       ├── Application/            # Testes de serviços (ex: UserService)
@@ -187,7 +200,7 @@ FCG.FiapCloudGames/
 │       └── Helpers/                # Setup de mocks e objetos fake
 │   ├── IntegrationTests/           # Testes de Integração
 │
-├── FCG.Documentation/              # Documentação do projeto
+├── Documentation/              # Documentação do projeto
 ├── .github/                        # Configurações do GitHub Actions para CI/CD
 │
 ├── .gitattributes                  # Configurações do Git
@@ -201,18 +214,18 @@ FCG.FiapCloudGames/
 
 ## 🔗 Diagrama de Relacionamento (Simplificado)
 ```plaintext
-+------------------+           +--------------------+           +------------------+            +------------------+
-|     Users        |<--------->|   Request_log      |<--------->|    Trace_log     |            |      Games       |
-+------------------+   (1:N)   +--------------------+   (1:N)   +------------------+            +------------------+
-| UserId (PK)      |           | LogId (PK)         |           | TraceId (PK)     |            | GameId (PK)      |
-| Name             |           | UserId (FK)        |           | LogId (FK)       |            | Name             |
-| Email            |           | HttpMethod         |           | Timestamp        |            | Description      |
-| PasswordHash     |           | Path               |           | Level            |            | Genre            |
-| IsActive         |           | StatusCode         |           | Message          |            | ReleaseDate      |
-| CreatedAt        |           | RequestBody        |           | StackTrace       |            | CreatedAt        |
-| UpdatedAt        |           | ResponseBody       |           +------------------+            | UpdatedAt        |
-| IsAdmin          |           | StartDate          |                                           | Rating           |
-+------------------+           | EndDate            |                                           +------------------+ 
++------------------+           +--------------------+           +------------------+
+|     Users        |<--------->|   Request_log      |<--------->|    Trace_log     |
++------------------+   (1:N)   +--------------------+   (1:N)   +------------------+
+| UserId (PK)      |           | LogId (PK)         |           | TraceId (PK)     |
+| Name             |           | UserId (FK)        |           | LogId (FK)       |
+| Email            |           | HttpMethod         |           | Timestamp        |
+| PasswordHash     |           | Path               |           | Level            |
+| IsActive         |           | StatusCode         |           | Message          |
+| CreatedAt        |           | RequestBody        |           | StackTrace       |
+| UpdatedAt        |           | ResponseBody       |           +------------------+
+| IsAdmin          |           | StartDate          |                               
++------------------+           | EndDate            |                               
                                | Duration           |
                                +--------------------+       
 ```
@@ -230,6 +243,7 @@ Automatizando os seguintes passos:
    - DEV
    - UAT (necessário aprovação)
    - PRD (apenas com PR na branch `master` e necessário aprovação)
+
    
 
 ## ☁️ Infraestrutura na Azure
@@ -237,13 +251,17 @@ Automatizando os seguintes passos:
 O projeto utiliza os seguintes recursos na Azure:
 
 - **Azure Resource Group**: `RG_FCG`
-- **Azure SQL Database**: `fiapcloudgamesdb`
+- **Azure SQL Database**: `FCG.UsersDB`
 - **Azure Container Registry (ACR)**: `acrfcg.azurecr.io`
 - **Azure Container Apps**:
-  - DEV: `aca-fcg-dev` 
-  - UAT: `aca-fcg-uat` 
-  - PRD: `aca-fcg` 
+  - DEV: `aca-fcg-users-dev` 
+  - UAT: `aca-fcg-users-uat` 
+  - PRD: `aca-fcg-users` 
+- **Azure Api Management**: `apim-fcg`
+- **Azure Service Bus**: `servicebus-fcg`
+- **Azure Functions**: `func-fcg-payments`
 
+  - 
 As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
 [Link para o desenho de infraestrutura](https://miro.com/app/board/uXjVIteOb6w=/?share_link_id=230805148396)
 
