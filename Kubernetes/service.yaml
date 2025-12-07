@@ -9,8 +9,8 @@ spec:
   type: LoadBalancer        # Tipo LoadBalancer: cria um IP público para acesso externo
 
   selector:
-    app: fcg-users-api      # O selector conecta este Service aos Pods com este label
+    app: fcg-users          # O selector conecta este Service aos Pods com este label
 
   ports:                    # Mapeamento de portas
     - port: 80              # Porta pública exposta no Service
-      targetPort: 80        # Porta interna do container
+      targetPort: 8080      # Porta interna do container

@@ -1,28 +1,37 @@
 apiVersion: apps/v1                                                         # Versão da API do Kubernetes usada para criar Deployments
-
 kind: Deployment                                                            # Tipo do objeto: Deployment cria réplicas e faz rollout
 
 metadata:
-  name: fcg-users-deployment                                                # Nome do Deployment
-  namespace: fcg                                                            # Namespace onde ele será criado
+  name: fcg-users                                                           # Nome do Deployment
+  namespace: fcg                                                            # Namespace default onde será criado o deployment (caso não seja especificado)
 
 spec:
   replicas: 1                                                               # Quantas réplicas (pods) deseja rodar
   selector:                                                                 # Selector: identifica quais pods pertencem a este Deployment
     matchLabels:
-      app: fcg-users-api
+      app: fcg-users
 
   template:                                                                 # Template: modelo usado para criar cada Pod
     metadata:
       labels:                                                               # Labels aplicadas nos Pods criados
-        app: fcg-users-api
+        app: fcg-users
 
     spec:
       containers:                                                           # Lista de containers dentro do Pod
         - name: fcg-users-container                                         # Nome do container
-          image: acrfcg.azurecr.io/fiapcloudgames/users/api:__IMAGE_TAG__   # Imagem do container no ACR
+          image: acrfcg.azurecr.io/fiapcloudgames/users/api:${IMAGE_TAG}   # Imagem do container no ACR
           ports:                                                            # Porta exposta internamente no container
-            - containerPort: 80
-          env:                                                              # Variáveis de ambiente enviadas para sua aplicação
-            - name: ASPNETCORE_ENVIRONMENT
-              value: "Production"
+            - containerPort: 8080
+          env:                                                              # Variáveis de ambiente enviadas para a aplicação
+            - name: ConnectionStrings__FCGUsersDbConnection
+              value: ${FCG_DB_CONNECTION_STRING}
+            - name: NEW_RELIC_LICENSE_KEY
+              value: ${NEW_RELIC_LICENSE_KEY}
+            - name: NEW_RELIC_APP_NAME
+              value: ${NEW_RELIC_APP_NAME}
+            - name: NewRelic__Enabled
+              value: ${NEW_RELIC_ENABLED}
+            - name: NewRelic__Endpoint
+              value: ${NEW_RELIC_ENDPOINT}
+            - name: AspNetCore__Environment
+              value: ${ENVIRONMENT}
