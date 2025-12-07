@@ -66,7 +66,7 @@ jobs:
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
 
       - name: Apply Namespaces
-        run: kubectl apply -f kubernetes/namespace.yaml
+        run: kubectl apply -f Kubernetes/namespace.yaml
 
       - name: Deploy to AKS - DEV
         run: |
@@ -78,8 +78,8 @@ jobs:
              export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
              export ENVIRONMENT=${{ vars.ENV }}
              
-             envsubst < kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -
-             kubectl apply -f kubernetes/service.yaml -n fcg-dev
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -
+             kubectl apply -f Kubernetes/service.yaml -n fcg-dev
              kubectl rollout status deployment/fcg-users -n fcg-dev
 
   deploy-uat:
@@ -99,7 +99,7 @@ jobs:
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
       - name: Apply Namespaces
-        run: kubectl apply -f kubernetes/namespace.yaml
+        run: kubectl apply -f Kubernetes/namespace.yaml
 
       - name: Deploy to AKS - UAT
         run: |
@@ -111,8 +111,8 @@ jobs:
              export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
              export ENVIRONMENT=${{ vars.ENV }}
              
-             envsubst < kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -
-             kubectl apply -f kubernetes/service.yaml -n fcg-uat
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -
+             kubectl apply -f Kubernetes/service.yaml -n fcg-uat
              kubectl rollout status deployment/fcg-users -n fcg-uat
 
   deploy-prd:
@@ -134,7 +134,7 @@ jobs:
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
       - name: Apply Namespaces
-        run: kubectl apply -f kubernetes/namespace.yaml
+        run: kubectl apply -f Kubernetes/namespace.yaml
 
       - name: Deploy to AKS - PRD
         run: |
@@ -146,6 +146,6 @@ jobs:
              export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
              export ENVIRONMENT=${{ vars.ENV }}
              
-             envsubst < kubernetes/deployment.yaml | kubectl apply -n fcg -f -
-             kubectl apply -f kubernetes/service.yaml -n fcg
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg -f -
+             kubectl apply -f Kubernetes/service.yaml -n fcg
              kubectl rollout status deployment/fcg-users -n fcg
