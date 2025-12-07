@@ -3,7 +3,6 @@ kind: Deployment                                                            # Ti
 
 metadata:
   name: fcg-users                                                           # Nome do Deployment
-  namespace: fcg                                                            # Namespace default onde será criado o deployment (caso não seja especificado)
 
 spec:
   replicas: 1                                                               # Quantas réplicas (pods) deseja rodar
