@@ -68,23 +68,18 @@ jobs:
       - name: Set AKS context
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
-      - name: Check Kubernetes files
-        run: |
-             echo "Current directory: $PWD"
-             ls -l Kubernetes
-
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
 
       - name: Deploy to AKS - DEV
         run: |
-             export IMAGE_TAG=${{ needs.build-test-pushDockerImage.outputs.image_tag }}
-             export FCG_DB_CONNECTION_STRING=${{ secrets.FCG_DB_CONNECTION_STRING }}
-             export NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}
-             export NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}
-             export NEW_RELIC_ENABLED=${{ vars.NEW_RELIC_ENABLED }}
-             export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
-             export ENVIRONMENT=${{ vars.ENV }}
+             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"
+             export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
+             export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
+             export NEW_RELIC_APP_NAME="${{ vars.NEW_RELIC_APP_NAME }}"
+             export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
+             export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
+             export ENVIRONMENT="${{ vars.ENV }}"
              
              envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -
              kubectl apply -f Kubernetes/service.yaml -n fcg-dev
@@ -114,13 +109,13 @@ jobs:
 
       - name: Deploy to AKS - UAT
         run: |
-             export IMAGE_TAG=${{ needs.build-test-pushDockerImage.outputs.image_tag }}
-             export FCG_DB_CONNECTION_STRING=${{ secrets.FCG_DB_CONNECTION_STRING }}
-             export NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}
-             export NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}
-             export NEW_RELIC_ENABLED=${{ vars.NEW_RELIC_ENABLED }}
-             export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
-             export ENVIRONMENT=${{ vars.ENV }}
+             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"
+             export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
+             export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
+             export NEW_RELIC_APP_NAME="${{ vars.NEW_RELIC_APP_NAME }}"
+             export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
+             export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
+             export ENVIRONMENT="${{ vars.ENV }}"
              
              envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -
              kubectl apply -f Kubernetes/service.yaml -n fcg-uat
@@ -152,13 +147,13 @@ jobs:
 
       - name: Deploy to AKS - PRD
         run: |
-             export IMAGE_TAG=${{ needs.build-test-pushDockerImage.outputs.image_tag }}
-             export FCG_DB_CONNECTION_STRING=${{ secrets.FCG_DB_CONNECTION_STRING }}
-             export NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}
-             export NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}
-             export NEW_RELIC_ENABLED=${{ vars.NEW_RELIC_ENABLED }}
-             export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
-             export ENVIRONMENT=${{ vars.ENV }}
+             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"
+             export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
+             export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
+             export NEW_RELIC_APP_NAME="${{ vars.NEW_RELIC_APP_NAME }}"
+             export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
+             export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
+             export ENVIRONMENT="${{ vars.ENV }}"
              
              envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg -f -
              kubectl apply -f Kubernetes/service.yaml -n fcg
