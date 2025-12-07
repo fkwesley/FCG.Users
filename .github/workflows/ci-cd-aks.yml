@@ -64,6 +64,9 @@ jobs:
 
       - name: Set AKS context
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
+        
+      - name: List Kubernetes folder
+        run: ls -l Kubernetes
 
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
