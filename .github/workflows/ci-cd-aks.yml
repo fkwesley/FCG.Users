@@ -19,15 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0   # pega todo o histórico, evita problemas com paths
-
-      - name: Debug repo after checkout
-        run: |
-          pwd
-          echo "List root:"
-          ls -l
-          echo "List Kubernetes folder:"
-          ls -l Kubernetes || echo "Kubernetes folder not found"
-        
+          
       - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v3
         with:
@@ -72,22 +64,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set AKS contextKubernetes/
+      - name: Set AKS context$GITHUB_WORKSPACE/Kubernetes/
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
-      - name: Debug repo structure
-        run: |
-             echo "Current working directory:"
-             pwd
-             echo "List files in current dir:"
-             ls -l
-             echo "List files in FCG.Users dir:"
-             ls -l FCG.Users || echo "FCG.Users does not exist"
-             echo "List files in Kubernetes dir:"
-             ls -l Kubernetes || echo "Kubernetes does not exist"
-
       - name: Apply Namespaces
-        run: kubectl apply -f Kubernetes/namespace.yaml
+        run: kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/namespace.yaml
 
       - name: Deploy to AKS - DEV
         run: |
@@ -99,8 +80,8 @@ jobs:
              export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
              export ENVIRONMENT=${{ vars.ENV }}
              
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -
-             kubectl apply -f Kubernetes/service.yaml -n fcg-dev
+             envsubst < $GITHUB_WORKSPACE/Kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -
+             kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/service.yaml -n fcg-dev
              kubectl rollout status deployment/fcg-users -n fcg-dev
 
   deploy-uat:
@@ -120,7 +101,7 @@ jobs:
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
       - name: Apply Namespaces
-        run: kubectl apply -f Kubernetes/namespace.yaml
+        run: kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/namespace.yaml
 
       - name: Deploy to AKS - UAT
         run: |
@@ -132,8 +113,8 @@ jobs:
              export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
              export ENVIRONMENT=${{ vars.ENV }}
              
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -
-             kubectl apply -f Kubernetes/service.yaml -n fcg-uat
+             envsubst < $GITHUB_WORKSPACE/Kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -
+             kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/service.yaml -n fcg-uat
              kubectl rollout status deployment/fcg-users -n fcg-uat
 
   deploy-prd:
@@ -155,7 +136,7 @@ jobs:
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
       - name: Apply Namespaces
-        run: kubectl apply -f Kubernetes/namespace.yaml
+        run: kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/namespace.yaml
 
       - name: Deploy to AKS - PRD
         run: |
@@ -167,6 +148,6 @@ jobs:
              export NEW_RELIC_ENDPOINT=${{ vars.NEW_RELIC_ENDPOINT }}
              export ENVIRONMENT=${{ vars.ENV }}
              
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg -f -
-             kubectl apply -f Kubernetes/service.yaml -n fcg
+             envsubst < $GITHUB_WORKSPACE/Kubernetes/deployment.yaml | kubectl apply -n fcg -f -
+             kubectl apply -f $GITHUB_WORKSPACE/Kubernetes/service.yaml -n fcg
              kubectl rollout status deployment/fcg-users -n fcg
