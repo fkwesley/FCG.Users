@@ -3,7 +3,6 @@ kind: Service               # Tipo do objeto: Service permite acessar o Deployme
 
 metadata:
   name: fcg-users-svc       # Nome do Service
-  namespace: fcg            # Mesmo namespace do Deployment
 
 spec:
   type: LoadBalancer        # Tipo LoadBalancer: cria um IP público para acesso externo
