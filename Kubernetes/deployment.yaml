@@ -29,7 +29,7 @@ spec:
             - name: NEW_RELIC_APP_NAME
               value: ${NEW_RELIC_APP_NAME}
             - name: NewRelic__Enabled
-              value: ${NEW_RELIC_ENABLED}
+              value: "${NEW_RELIC_ENABLED}"
             - name: NewRelic__Endpoint
               value: ${NEW_RELIC_ENDPOINT}
             - name: AspNetCore__Environment
