@@ -65,6 +65,17 @@ jobs:
       - name: Set AKS context
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
+      - name: Debug repo structure
+        run: |
+             echo "Current working directory:"
+             pwd
+             echo "List files in current dir:"
+             ls -l
+             echo "List files in FCG.Users dir:"
+             ls -l FCG.Users || echo "FCG.Users does not exist"
+             echo "List files in Kubernetes dir:"
+             ls -l Kubernetes || echo "Kubernetes does not exist"
+
       - name: Apply Namespaces
         run: kubectl apply -f FCG.Users/Kubernetes/namespace.yaml
 
