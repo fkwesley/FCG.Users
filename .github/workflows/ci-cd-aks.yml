@@ -65,17 +65,6 @@ jobs:
       - name: Set AKS context
         run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
         
-      - name: Check Kubernetes YAMLs
-        run: |
-             echo "Current working directory:"
-             pwd
-             echo ""
-             echo "List files in repo root:"
-             ls -l
-             echo ""
-             echo "List files in Kubernetes folder:"
-             ls -l Kubernetes
-
       - name: Apply Namespaces
         run: kubectl apply -f FCG.Users/Kubernetes/namespace.yaml
 
