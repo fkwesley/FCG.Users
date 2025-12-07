@@ -1,0 +1,52 @@
+name: CI/CD - FCG.Users
+  
+on:
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - '**/README.md'
+      - 'Documentation/**'
+
+jobs:
+  build-test-pushDockerImage:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.set_tag.outputs.image_tag }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore FCG.Users.sln
+
+      - name: Build
+        run: dotnet build FCG.Users.sln --configuration Release --no-restore
+
+      - name: Unit Tests with Coverage
+        run: dotnet test FCG.Users.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        
+      - name: Login to Azure Container Registry
+        run: echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login acrfcg.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+      
+      - name: Set Docker Image Tag
+        id: set_tag
+        run: |
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            echo "image_tag=${SHORT_SHA}" >> $GITHUB_OUTPUT
+      
+      - name: Build Docker image
+        run: |
+            docker build -t acrfcg.azurecr.io/fiapcloudgames/users/api:latest \
+                         -t acrfcg.azurecr.io/fiapcloudgames/users/api:${{ steps.set_tag.outputs.image_tag }} .
+
+      - name: Push Docker image to ACR
+        run: |
+            docker push acrfcg.azurecr.io/fiapcloudgames/users/api:latest
+            docker push acrfcg.azurecr.io/fiapcloudgames/users/api:${{ steps.set_tag.outputs.image_tag }}

@@ -1,0 +1,16 @@
+apiVersion: v1              # API para criação de Services
+kind: Service               # Tipo do objeto: Service permite acessar o Deployment
+
+metadata:
+  name: fcg-users-svc       # Nome do Service
+  namespace: fcg            # Mesmo namespace do Deployment
+
+spec:
+  type: LoadBalancer        # Tipo LoadBalancer: cria um IP público para acesso externo
+
+  selector:
+    app: fcg-users-api      # O selector conecta este Service aos Pods com este label
+
+  ports:                    # Mapeamento de portas
+    - port: 80              # Porta pública exposta no Service
+      targetPort: 80        # Porta interna do container

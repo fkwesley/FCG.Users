@@ -1,0 +1,28 @@
+apiVersion: apps/v1                                                         # Versão da API do Kubernetes usada para criar Deployments
+
+kind: Deployment                                                            # Tipo do objeto: Deployment cria réplicas e faz rollout
+
+metadata:
+  name: fcg-users-deployment                                                # Nome do Deployment
+  namespace: fcg                                                            # Namespace onde ele será criado
+
+spec:
+  replicas: 1                                                               # Quantas réplicas (pods) deseja rodar
+  selector:                                                                 # Selector: identifica quais pods pertencem a este Deployment
+    matchLabels:
+      app: fcg-users-api
+
+  template:                                                                 # Template: modelo usado para criar cada Pod
+    metadata:
+      labels:                                                               # Labels aplicadas nos Pods criados
+        app: fcg-users-api
+
+    spec:
+      containers:                                                           # Lista de containers dentro do Pod
+        - name: fcg-users-container                                         # Nome do container
+          image: acrfcg.azurecr.io/fiapcloudgames/users/api:__IMAGE_TAG__   # Imagem do container no ACR
+          ports:                                                            # Porta exposta internamente no container
+            - containerPort: 80
+          env:                                                              # Variáveis de ambiente enviadas para sua aplicação
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
