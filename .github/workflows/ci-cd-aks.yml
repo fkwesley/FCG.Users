@@ -1,4 +1,4 @@
-name: CI/CD - FCG.Users
+name: CI/CD - FCG.Users - AKS
   
 on:
   push:
