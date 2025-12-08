@@ -2,35 +2,37 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: fcg-ingress-uat
+  namespace: fcg-uat
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
     - http:
         paths:
-          # UAT environment
-          - path: /uat/users
-            pathType: Prefix
+          - path: /uat/users(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: fcg-users-svc
                 port:
                   number: 80
-          - path: /uat/games
-            pathType: Prefix
+          - path: /uat/games(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: fcg-games-svc
                 port:
                   number: 80
-          # - path: /uat/orders
-          #   pathType: Prefix
+          # - path: /uat/orders(/|$)(.*)
+          #   pathType: ImplementationSpecific
           #   backend:
           #     service:
           #       name: fcg-orders-svc
           #       port:
           #         number: 80
-          # - path: /uat/payments
-          #   pathType: Prefix
+          # - path: /uat/payments(/|$)(.*)
+          #   pathType: ImplementationSpecific
           #   backend:
           #     service:
           #       name: fcg-payments-svc
