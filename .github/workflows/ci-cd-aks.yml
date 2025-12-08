@@ -71,19 +71,17 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
 
+      - name: Apply ConfigMap and Secret
+        run: |
+             kubectl apply -f Kubernetes/configmap.yaml -n fcg-dev
+             kubectl apply -f Kubernetes/secret.yaml -n fcg-dev
+
       - name: Deploy to AKS - DEV
         run: |
-             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"
-             export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
-             export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
-             export NEW_RELIC_APP_NAME="${{ vars.NEW_RELIC_APP_NAME }}"
-             export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
-             export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
-             export ENVIRONMENT="${{ vars.ENV }}"
-             
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -
-             kubectl apply -f Kubernetes/service.yaml -n fcg-dev
-             kubectl rollout status deployment/fcg-users -n fcg-dev
+             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"   # tag da imagem Docker
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -          # aplica o deployment com substituição de variáveis
+             kubectl apply -f Kubernetes/service.yaml -n fcg-dev                            # aplica o service
+             kubectl rollout status deployment/fcg-users -n fcg-dev                         # aguarda o rollout completar
 
   deploy-uat:
     needs:
@@ -107,19 +105,17 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
 
+      - name: Apply ConfigMap and Secret
+        run: |
+             kubectl apply -f Kubernetes/configmap.yaml -n fcg-uat
+             kubectl apply -f Kubernetes/secret.yaml -n fcg-uat
+
       - name: Deploy to AKS - UAT
         run: |
-             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"
-             export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
-             export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
-             export NEW_RELIC_APP_NAME="${{ vars.NEW_RELIC_APP_NAME }}"
-             export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
-             export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
-             export ENVIRONMENT="${{ vars.ENV }}"
-             
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -
-             kubectl apply -f Kubernetes/service.yaml -n fcg-uat
-             kubectl rollout status deployment/fcg-users -n fcg-uat
+             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"   # tag da imagem Docker
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -          # aplica o deployment com substituição de variáveis
+             kubectl apply -f Kubernetes/service.yaml -n fcg-uat                            # aplica o service
+             kubectl rollout status deployment/fcg-users -n fcg-uat                         # aguarda o rollout completar
 
   deploy-prd:
     needs:
@@ -145,16 +141,14 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
 
+      - name: Apply ConfigMap and Secret
+        run: |
+             kubectl apply -f Kubernetes/configmap.yaml -n fcg
+             kubectl apply -f Kubernetes/secret.yaml -n fcg
+
       - name: Deploy to AKS - PRD
         run: |
-             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"
-             export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
-             export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
-             export NEW_RELIC_APP_NAME="${{ vars.NEW_RELIC_APP_NAME }}"
-             export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
-             export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
-             export ENVIRONMENT="${{ vars.ENV }}"
-             
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg -f -
-             kubectl apply -f Kubernetes/service.yaml -n fcg
-             kubectl rollout status deployment/fcg-users -n fcg
+             export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"   # tag da imagem Docker
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg -f -              # aplica o deployment com substituição de variáveis
+             kubectl apply -f Kubernetes/service.yaml -n fcg                                # aplica o service
+             kubectl rollout status deployment/fcg-users -n fcg                             # aguarda o rollout completar

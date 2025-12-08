@@ -1,6 +1,5 @@
 apiVersion: apps/v1                                                         # Versão da API do Kubernetes usada para criar Deployments
 kind: Deployment                                                            # Tipo do objeto: Deployment cria réplicas e faz rollout
-
 metadata:
   name: fcg-users                                                           # Nome do Deployment
 
@@ -18,19 +17,44 @@ spec:
     spec:
       containers:                                                           # Lista de containers dentro do Pod
         - name: fcg-users-container                                         # Nome do container
-          image: acrfcg.azurecr.io/fiapcloudgames/users/api:${IMAGE_TAG}   # Imagem do container no ACR
+          image: acrfcg.azurecr.io/fiapcloudgames/users/api:${IMAGE_TAG}    # Imagem do container no ACR
           ports:                                                            # Porta exposta internamente no container
             - containerPort: 8080
-          env:                                                              # Variáveis de ambiente enviadas para a aplicação
-            - name: ConnectionStrings__FCGUsersDbConnection
-              value: ${FCG_DB_CONNECTION_STRING}
-            - name: NEW_RELIC_LICENSE_KEY
-              value: ${NEW_RELIC_LICENSE_KEY}
+          env:
+            # from ConfigMap
             - name: NEW_RELIC_APP_NAME
-              value: ${NEW_RELIC_APP_NAME}
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-users-config
+                  key: NEW_RELIC_APP_NAME
+
             - name: NewRelic__Enabled
-              value: "${NEW_RELIC_ENABLED}"
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-users-config
+                  key: NewRelic__Enabled
+
             - name: NewRelic__Endpoint
-              value: ${NEW_RELIC_ENDPOINT}
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-users-config
+                  key: NewRelic__Endpoint
+
             - name: AspNetCore__Environment
-              value: ${ENVIRONMENT}
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-users-config
+                  key: AspNetCore__Environment
+
+            # from Secret
+            - name: ConnectionStrings__FCGUsersDbConnection
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-users-secret
+                  key: FCG_DB_CONNECTION_STRING
+
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-users-secret
+                  key: NEW_RELIC_LICENSE_KEY
