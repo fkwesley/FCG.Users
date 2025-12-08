@@ -73,8 +73,14 @@ jobs:
 
       - name: Apply ConfigMap and Secret
         run: |
-             kubectl apply -f Kubernetes/configmap.yaml -n fcg-dev
-             kubectl apply -f Kubernetes/secret.yaml -n fcg-dev
+             export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
+             export NEW_RELIC_LICENSE_KEY="${{ secrets.NEW_RELIC_LICENSE_KEY }}"
+             export NEW_RELIC_APP_NAME="${{ vars.NEW_RELIC_APP_NAME }}"
+             export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
+             export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
+             export ENVIRONMENT="${{ vars.ENV }}"
+             envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-dev -f -           # aplica o configmap com substituição de variáveis
+             envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-dev -f -              # aplica o secret com substituição de variáveis
 
       - name: Deploy to AKS - DEV
         run: |
