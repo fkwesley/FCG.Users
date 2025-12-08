@@ -6,4 +6,4 @@ data:
   NEW_RELIC_APP_NAME: "${NEW_RELIC_APP_NAME}"
   NewRelic__Enabled: "${NEW_RELIC_ENABLED}"
   NewRelic__Endpoint: "${NEW_RELIC_ENDPOINT}"
-  AspNetCore__Environment: "${ENVIRONMENT}"
+  AspNetCore_Environment: "${ENV}"

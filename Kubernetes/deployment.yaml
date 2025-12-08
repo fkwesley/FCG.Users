@@ -40,11 +40,11 @@ spec:
                   name: fcg-users-config
                   key: NewRelic__Endpoint
 
-            - name: AspNetCore__Environment
+            - name: AspNetCore_Environment
               valueFrom:
                 configMapKeyRef:
                   name: fcg-users-config
-                  key: AspNetCore__Environment
+                  key: AspNetCore_Environment
 
             # from Secret
             - name: ConnectionStrings__FCGUsersDbConnection
