@@ -4,27 +4,28 @@ metadata:
   name: fcg-ingress-dev
   namespace: fcg-dev
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /dev/users(/|$)(.*)  
+          - path: /dev/users/?(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: fcg-users-svc
                 port:
                   number: 80
-          - path: /dev/games(/|$)(.*)
+          - path: /dev/games/?(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: fcg-games-svc
                 port:
                   number: 80
+
           # - path: /dev/orders(/|$)(.*)
           #   pathType: ImplementationSpecific
           #   backend:
