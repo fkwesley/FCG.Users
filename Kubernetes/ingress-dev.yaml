@@ -11,14 +11,14 @@ spec:
   rules:
     - http:
         paths:
-          - path: /dev/users/?(.*)
+          - path: /dev/users-api/?(.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: fcg-users-svc
                 port:
                   number: 80
-          - path: /dev/games/?(.*)
+          - path: /dev/games-api/?(.*)
             pathType: ImplementationSpecific
             backend:
               service:
