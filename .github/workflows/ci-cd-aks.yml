@@ -66,7 +66,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Set AKS context
-        run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
+        run: az aks get-credentials --resource-group RG_FCG --name aks-fcg-users --overwrite-existing
         
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
@@ -109,7 +109,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Set AKS context
-        run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
+        run: az aks get-credentials --resource-group RG_FCG --name aks-fcg-users --overwrite-existing
         
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
@@ -154,7 +154,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Set AKS context
-        run: az aks get-credentials --resource-group RG_FCG --name aks-fcg --overwrite-existing
+        run: az aks get-credentials --resource-group RG_FCG --name aks-fcg-users --overwrite-existing
         
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
