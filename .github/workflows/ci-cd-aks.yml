@@ -71,8 +71,8 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
         
-      - name: Apply Ingress
-        run: kubectl apply -f Kubernetes/ingress-dev.yaml -n fcg-dev
+      # - name: Apply Ingress
+      #   run: kubectl apply -f Kubernetes/ingress-dev.yaml -n fcg-dev
 
       - name: Apply ConfigMap and Secret
         run: |
@@ -114,8 +114,8 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
         
-      - name: Apply Ingress
-        run: kubectl apply -f Kubernetes/ingress-uat.yaml -n fcg-uat
+      # - name: Apply Ingress
+      #   run: kubectl apply -f Kubernetes/ingress-uat.yaml -n fcg-uat
 
       - name: Apply ConfigMap and Secret
         run: |
@@ -141,7 +141,7 @@ jobs:
       - deploy-dev
       - deploy-uat
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: PRD
 
     steps:
@@ -159,8 +159,8 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
         
-      - name: Apply Ingress
-        run: kubectl apply -f Kubernetes/ingress.yaml -n fcg
+      # - name: Apply Ingress
+      #   run: kubectl apply -f Kubernetes/ingress.yaml -n fcg
 
       - name: Apply ConfigMap and Secret
         run: |

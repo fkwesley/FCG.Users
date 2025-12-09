@@ -5,7 +5,7 @@ metadata:
   name: fcg-users-svc       # Nome do Service
 
 spec:
-  type: ClusterIP           # Tipo ClusterIP: para acesso interno
+  type: LoadBalancer        # Tipo do Service: LoadBalancer para expor externamente
 
   selector:
     app: fcg-users          # O selector conecta este Service aos Pods com este label
