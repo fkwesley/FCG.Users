@@ -71,9 +71,6 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
         
-      # - name: Apply Ingress
-      #   run: kubectl apply -f Kubernetes/ingress-dev.yaml -n fcg-dev
-
       - name: Apply ConfigMap and Secret
         run: |
              export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
@@ -82,15 +79,15 @@ jobs:
              export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
              export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
              export ENV="${{ vars.ENV }}"
-             envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-dev -f -           # aplica o configmap com substituição de variáveis
-             envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-dev -f -              # aplica o secret com substituição de variáveis
+             envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-users-dev -f -           # aplica o configmap com substituição de variáveis
+             envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-users-dev -f -              # aplica o secret com substituição de variáveis
 
       - name: Deploy to AKS - DEV
         run: |
              export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"   # tag da imagem Docker
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-dev -f -          # aplica o deployment com substituição de variáveis
-             kubectl apply -f Kubernetes/service.yaml -n fcg-dev                            # aplica o service
-             kubectl rollout status deployment/fcg-users -n fcg-dev                         # aguarda o rollout completar
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-users-dev -f -          # aplica o deployment com substituição de variáveis
+             kubectl apply -f Kubernetes/service.yaml -n fcg-users-dev                            # aplica o service
+             kubectl rollout status deployment/fcg-users -n fcg-users-dev                         # aguarda o rollout completar
 
   deploy-uat:
     needs:
@@ -114,9 +111,6 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
         
-      # - name: Apply Ingress
-      #   run: kubectl apply -f Kubernetes/ingress-uat.yaml -n fcg-uat
-
       - name: Apply ConfigMap and Secret
         run: |
              export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
@@ -125,15 +119,15 @@ jobs:
              export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
              export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
              export ENV="${{ vars.ENV }}"
-             envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-uat -f -           # aplica o configmap com substituição de variáveis
-             envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-uat -f -              # aplica o secret com substituição de variáveis
+             envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-users-uat -f -           # aplica o configmap com substituição de variáveis
+             envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-users-uat -f -              # aplica o secret com substituição de variáveis
 
       - name: Deploy to AKS - UAT
         run: |
              export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"   # tag da imagem Docker
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-uat -f -          # aplica o deployment com substituição de variáveis
-             kubectl apply -f Kubernetes/service.yaml -n fcg-uat                            # aplica o service
-             kubectl rollout status deployment/fcg-users -n fcg-uat                         # aguarda o rollout completar
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-users-uat -f -          # aplica o deployment com substituição de variáveis
+             kubectl apply -f Kubernetes/service.yaml -n fcg-users-uat                            # aplica o service
+             kubectl rollout status deployment/fcg-users -n fcg-users-uat                         # aguarda o rollout completar
 
   deploy-prd:
     needs:
@@ -141,7 +135,7 @@ jobs:
       - deploy-dev
       - deploy-uat
     runs-on: ubuntu-latest
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: PRD
 
     steps:
@@ -159,9 +153,6 @@ jobs:
       - name: Apply Namespaces
         run: kubectl apply -f Kubernetes/namespace.yaml
         
-      # - name: Apply Ingress
-      #   run: kubectl apply -f Kubernetes/ingress.yaml -n fcg
-
       - name: Apply ConfigMap and Secret
         run: |
              export FCG_DB_CONNECTION_STRING="${{ secrets.FCG_DB_CONNECTION_STRING }}"
@@ -170,12 +161,12 @@ jobs:
              export NEW_RELIC_ENABLED="${{ vars.NEW_RELIC_ENABLED }}"
              export NEW_RELIC_ENDPOINT="${{ vars.NEW_RELIC_ENDPOINT }}"
              export ENV="${{ vars.ENV }}"
-             envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg -f -           # aplica o configmap com substituição de variáveis
-             envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg -f -              # aplica o secret com substituição de variáveis
+             envsubst < Kubernetes/configmap.yaml | kubectl apply -n fcg-users -f -           # aplica o configmap com substituição de variáveis
+             envsubst < Kubernetes/secret.yaml | kubectl apply -n fcg-users -f -              # aplica o secret com substituição de variáveis
 
       - name: Deploy to AKS - PRD
         run: |
              export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"   # tag da imagem Docker
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg -f -          # aplica o deployment com substituição de variáveis
-             kubectl apply -f Kubernetes/service.yaml -n fcg                            # aplica o service
-             kubectl rollout status deployment/fcg-users -n fcg                         # aguarda o rollout completar
+             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-users -f -          # aplica o deployment com substituição de variáveis
+             kubectl apply -f Kubernetes/service.yaml -n fcg-users                            # aplica o service
+             kubectl rollout status deployment/fcg-users -n fcg-users                         # aguarda o rollout completar
