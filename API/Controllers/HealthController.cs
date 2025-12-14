@@ -14,10 +14,10 @@ namespace FCG.FiapCloudGames.Controllers
         /// <returns>No content</returns>
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        [HttpPost(Name = "Health")]
+        [HttpGet(Name = "Health")]
         public IActionResult Health()
         {
-            return Ok();
+            return Ok("Healthy");
         }
     }
 }
