@@ -89,10 +89,6 @@ jobs:
              kubectl apply -f Kubernetes/service.yaml -n fcg-users-dev                            # aplica o service
              kubectl rollout status deployment/fcg-users -n fcg-users-dev                         # aguarda o rollout completar
 
-      - name: Deploy HPA
-        run: |
-             kubectl apply -f Kubernetes/hpa.yaml -n fcg-users-dev                                # aplica o HPA
-
   deploy-uat:
     needs:
       - build-test-pushDockerImage
@@ -139,7 +135,7 @@ jobs:
       - deploy-dev
       - deploy-uat
     runs-on: ubuntu-latest
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: PRD
 
     steps:
