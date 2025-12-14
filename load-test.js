@@ -1,46 +1,95 @@
 ﻿import http from 'k6/http';
-import { check } from 'k6';
+import { check, sleep } from 'k6';
 
 export const options = {
     scenarios: {
-        cpu_and_memory_pressure: {
-            executor: 'constant-arrival-rate',
-            rate: 200,              // 200 req/s
+        hpa_test: {
+            executor: 'ramping-arrival-rate',
             timeUnit: '1s',
-            duration: '5m',
-            preAllocatedVUs: 50,
-            maxVUs: 300,
+            preAllocatedVUs: 5,
+            maxVUs: 150,
+            stages: [
+                // 🔹 Fase 1 — carga baixa (baseline)
+                { target: 5, duration: '1m' },
+
+                // 🔹 Fase 2 — começa a pressionar
+                { target: 10, duration: '1m' },
+                { target: 20, duration: '1m' },
+                { target: 30, duration: '3m' },
+
+                // 🔻 Fase 3 — mantém carga alta
+                { target: 40, duration: '3m' },
+                { target: 50, duration: '2m' },
+
+                // 🧊 Fase 4 — cai quase a zero (força scale down)
+                { target: 5, duration: '4m' },
+            ],
         },
     },
+
     thresholds: {
         http_req_failed: ['rate<0.05'],
         http_req_duration: ['p(95)<2000'],
     },
 };
 
-const url = 'http://4.229.164.229/Users';
+/**
+ * =========================
+ * ENDPOINTS
+ * =========================
+ */
+const LOGIN_URL = 'http://4.239.177.16/Auth/Login';
+const USERS_URL = 'http://4.239.177.16/Users';
 
-const params = {
-    headers: {
-        'accept': 'text/plain',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJGUkFOSy5WSUVJUkEiLCJ1c2VyX2lkIjoiRlJBTksuVklFSVJBIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkZSQU5LIFZJRUlSQSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzY1NjgyNzE3LCJpc3MiOiJGQ0cuVXNlcnMifQ.GoZ7hLuw86_STebQkMqbn30Nh8B3jAn2Mck5UW75k5U',
-    },
-};
+/**
+ * =========================
+ * SETUP – LOGIN DINÂMICO
+ * =========================
+ */
+export function setup() {
+    const payload = JSON.stringify({
+        userId: 'frank.vieira',
+        password: 'Password1*',
+    });
 
-export default function () {
-    const res = http.get(url, params);
+    const params = {
+        headers: {
+            accept: 'text/plain',
+            'Content-Type': 'application/json',
+        },
+    };
 
-    // força uso de memória ao manter o body
-    const body = res.body;
-    const parsed = body ? body.length : 0;
+    const res = http.post(LOGIN_URL, payload, params);
+
+    check(res, {
+        'login status 200': r => r.status === 200,
+        'token retornado': r => r.json('token') !== undefined,
+    });
+
+    return {
+        token: res.json('token'),
+    };
+}
+
+/**
+ * =========================
+ * TESTE PRINCIPAL (IGUAL AO SEU)
+ * =========================
+ */
+export default function (data) {
+    const params = {
+        headers: {
+            accept: 'text/plain',
+            Authorization: `Bearer ${data.token}`,
+        },
+    };
+
+    const res = http.get(USERS_URL, params);
 
     check(res, {
         'status 200': r => r.status === 200,
     });
 
-    // pequeno loop pra gastar CPU no pod
-    let cpuBurn = 0;
-    for (let i = 0; i < 50000; i++) {
-        cpuBurn += Math.sqrt(i * parsed);
-    }
+    // mantém o ritmo do arrival-rate
+    sleep(0.01);
 }
