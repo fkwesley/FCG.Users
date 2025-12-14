@@ -20,7 +20,7 @@ spec:
           image: acrfcg.azurecr.io/fiapcloudgames/users/api:${IMAGE_TAG}    # Imagem do container no ACR
           ports:                                                            # Porta exposta internamente no container
             - containerPort: 8080
-           resources:
+          resources:
             requests:
               cpu: 200m
               memory: 256Mi
