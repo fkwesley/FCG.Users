@@ -7,8 +7,10 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: fcg-users
+
   minReplicas: 1
   maxReplicas: 3
+  
   metrics:
   - type: Resource
     resource:
@@ -16,3 +18,12 @@ spec:
       target:
         type: Utilization
         averageUtilization: 75
+
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 120   # tempo para estabilização antes de reduzir réplicas
+      policies: 
+      - type: Pods                      # política de redução baseada em número de pods
+        value: 1                        # reduz no máximo 1 pod por período
+        periodSeconds: 60               # período de 60 segundos
+
