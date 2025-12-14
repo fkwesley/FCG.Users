@@ -4,7 +4,7 @@ metadata:
   name: fcg-users                                                           # Nome do Deployment
 
 spec:
-  replicas: 1                                                               # Quantas réplicas (pods) deseja rodar
+  replicas: 2                                                               # Quantas réplicas (pods) deve inicializar
   selector:                                                                 # Selector: identifica quais pods pertencem a este Deployment
     matchLabels:
       app: fcg-users

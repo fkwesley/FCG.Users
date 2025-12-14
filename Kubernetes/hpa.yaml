@@ -8,8 +8,8 @@ spec:
     kind: Deployment
     name: fcg-users
 
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: 2
+  maxReplicas: 5
   
   metrics:
   - type: Resource
@@ -20,6 +20,12 @@ spec:
         averageUtilization: 75
 
   behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 120   # tempo para estabilização antes de aumentar réplicas
+      policies:                         # políticas de aumento
+      - type: Percent                   # política baseada em porcentagem
+        value: 50                       # aumenta no máximo 50% das réplicas atuais por período
+        periodSeconds: 60               # período de 60 segundos
     scaleDown:
       stabilizationWindowSeconds: 120   # tempo para estabilização antes de reduzir réplicas
       policies: 
