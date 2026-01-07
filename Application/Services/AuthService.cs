@@ -30,6 +30,7 @@ namespace Application.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId),
                 new Claim("user_id", user.UserId),
+                new Claim("user_email", user.Email),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
             };

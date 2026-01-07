@@ -26,6 +26,7 @@ namespace Tests.UnitTests.FCG.Tests.Application.Services
             {
                 UserId = "johndoe",
                 Name = "John Doe",
+                Email = "john@email.com",
                 IsAdmin = true
             };
 
@@ -39,6 +40,7 @@ namespace Tests.UnitTests.FCG.Tests.Application.Services
             var jwtToken = handler.ReadJwtToken(token);
 
             jwtToken.Claims.Should().Contain(c => c.Type == "user_id" && c.Value == "johndoe");
+            jwtToken.Claims.Should().Contain(c => c.Type == "user_email" && c.Value == "john@email.com");
             jwtToken.Claims.Should().Contain(c => c.Type == ClaimTypes.Name && c.Value == "John Doe");
             jwtToken.Claims.Should().Contain(c => c.Type == ClaimTypes.Role && c.Value == "Admin");
             jwtToken.Issuer.Should().Be(Issuer);
@@ -50,7 +52,7 @@ namespace Tests.UnitTests.FCG.Tests.Application.Services
         [InlineData(false, "User")]
         public void GenerateToken_ShouldContainCorrectRoleClaim_BasedOnUserRole(bool isAdmin, string expectedRole)
         {
-            var user = new User { UserId = "test", Name = "Test", IsAdmin = isAdmin };
+            var user = new User { UserId = "test", Name = "Test", IsAdmin = isAdmin, Email = "test@test.com" };
 
             var token = _authService.GenerateToken(user).Token;
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);

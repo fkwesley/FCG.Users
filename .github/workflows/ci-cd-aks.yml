@@ -125,7 +125,7 @@ jobs:
       - name: Deploy to AKS - UAT
         run: |
              export IMAGE_TAG="${{ needs.build-test-pushDockerImage.outputs.image_tag }}"         # tag da imagem Docker
-             envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-users-uat -f -          # aplica o deployment com substituição de variáveis
+             # envsubst < Kubernetes/deployment.yaml | kubectl apply -n fcg-users-uat -f -        # aplica o deployment com substituição de variáveis
              # kubectl apply -f Kubernetes/service.yaml -n fcg-users-uat                          # aplica o service
              # kubectl rollout status deployment/fcg-users -n fcg-users-uat                       # aguarda o rollout completar
 
