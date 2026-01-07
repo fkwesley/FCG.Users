@@ -33,9 +33,9 @@ namespace Application.Mappings
                 PasswordHash = entity.PasswordHash, // Assuming PasswordHash is the password to be returned
                 IsActive = entity.IsActive,
                 IsTechAccount = entity.IsTechAccount,
-                CreatedAt = DateTimeHelper.ConvertUtcToTimeZone(entity.CreatedAt, "E. South America Standard Time"),
+                CreatedAt = DateTimeHelper.ConvertUtcToTimeZone(entity.CreatedAt, "America/Sao_Paulo"),
                 UpdatedAt = entity.UpdatedAt.HasValue ? 
-                                DateTimeHelper.ConvertUtcToTimeZone(entity.UpdatedAt.Value, "E. South America Standard Time") : (DateTime?)null,
+                                DateTimeHelper.ConvertUtcToTimeZone(entity.UpdatedAt.Value, "America/Sao_Paulo") : (DateTime?)null,
                 IsAdmin = entity.IsAdmin
             };
         }
