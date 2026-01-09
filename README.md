@@ -1,7 +1,7 @@
 ﻿# 🎮 FCG.Users.API
 
 API desenvolvida para gerenciamento de usuários, com foco em micro-serviços e arquitetura orientada a eventos.
-- Hospedada na Azure usando Kuberneter Services e imagem docker publicada no ACR (Azure Container Registry).
+- Hospedada na Azure usando Kubernetes Services e imagem docker publicada no ACR (Azure Container Registry).
 - [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
 - [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
 - [Vídeo com a apresentação da Fase 3](https://youtu.be/3OxTOgieuMg)
@@ -302,4 +302,3 @@ Esse processo segue as melhores práticas:
 - Frank Vieira
 - GitHub: @fkwesley
 - Projeto desenvolvido para fins educacionais no curso da FIAP.
- 
