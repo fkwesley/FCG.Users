@@ -1,10 +1,11 @@
 ﻿# 🎮 FCG.Users.API
 
 API desenvolvida para gerenciamento de usuários, com foco em micro-serviços e arquitetura orientada a eventos.
-- Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
+- Hospedada na Azure usando Kuberneter Services e imagem docker publicada no ACR (Azure Container Registry).
 - [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
 - [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
 - [Vídeo com a apresentação da Fase 3](https://youtu.be/3OxTOgieuMg)
+- [Vídeo com a apresentação da Fase 4](https://youtu.be/3OxTOgieuMg)
 
 ## 📌 Objetivo
 
@@ -49,6 +50,23 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
     - Implementação de ElasticSearch para indexação dos jogos e logs 
     - Ganho de performance com consultas avançadas
     - Implementação de filtros, paginação e ordenação, inclusive endpoint de jogos mais bem avaliados
+### **Fase 4:**     
+  - **Orquestração de Containers usando Kubernetes:**
+    - Migração das aplicações hospedadas em Azure Container Apps (ACA) para Azure Kubernetes Services (AKS)
+    - Implementação de HPA (Horizontal Pod AutoScaler) para escalonamento horizontal automatico
+    - Implementação de configMap e secrets do Kubernetes para gerenciamento de configurações sensíveis
+    - Implementação de Health Probes para garantir a disponibilidade da aplicação
+    - Implementação de Deployments e Services para gerenciamento dos pods e exposição das aplicações
+    - Implementação de Statefulset e PVC (Persistent Volume Claim) para serviços que necessitam de persistência de dados
+  - **Comunicação Assíncrona entre serviços:**
+    - Utilização de filas e tópicos no RabbitMQ e ServiceBus para enfilerar requisições e garantir resiliência 
+  - **Otimização das imagens Docker**
+    - Migração versão da imagem Docker do .NET para uma versão mais leve, otimizando recursos dos containers
+    - Aplicações adaptadas para trabalhar com a versão mais leve
+    - Redução de aproximadamente 50% do tamanho das imagens
+  - **Monitoramento
+    - Elastic.APM instrumentado nas apis e no worker service
+    - dashboards com métricas de CPU, memória, requisições, pods...
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -64,10 +82,10 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Segurança         | PBKDF2 + salt com SHA256         |
 | Logger            | Middleware de Request/Response + LogId |
 | Docker            | Multi-stage Dockerfile para build e runtime |
-| Monitoramento     | New Relic (.NET Agent) + Azure |
-| Mensageria        | Azure Service Bus (Tópicos e Subscriptions) |
+| Monitoramento     | Elastic.APM + New Relic (.NET Agent) + Azure |
+| Mensageria        | Azure Service Bus (Tópicos e Subscriptions) + RabbitMQ|
 | Consumer de Mensagens | Azure Functions                  |
-| Orquestração      | Azure Container Apps             |
+| Orquestração      | Azure Kubernetes Services |
 | API Gateway       | Azure API Management             |
 | CI/CD             | GitHub Actions                   |
 | Testes de Carga   | K6                               |
@@ -126,7 +144,7 @@ Siga esses passos para configurar e rodar o projeto localmente:
 ### 
 - Clonar o repositório
   ```bash
-  git clone https://github.com/seu-usuario/FCG.Users.git
+  git clone https://github.com/fkwesley/FCG.Users.git
   ```
 - Configurar a conexão com o banco de dados no `appsettings.json` ou nas variáveis de ambiente
   ```json
@@ -143,7 +161,7 @@ Siga esses passos para configurar e rodar o projeto localmente:
   ```
 - Executar as migrations para criar o banco de dados, passando a connectionString
   ```bash
-  Update-Database -Project FCG.Infrastructure -StartupProject FCG.API -Connection "Server=(localdb)\(instance);Database=FiapCloudGamesDb;Trusted_Connection=True;TrustServerCertificate=True"
+  Update-Database -Project Infrastructure -StartupProject FCG.API -Connection "Server=(localdb)\(instance);Database=FiapCloudGamesDb;Trusted_Connection=True;TrustServerCertificate=True"
   ```
 - Rodar Testes
   ```bash
@@ -200,6 +218,7 @@ FCG.Users/
 │       └── Helpers/                # Setup de mocks e objetos fake
 │   ├── IntegrationTests/           # Testes de Integração
 │
+├── Kubernetes/                 # Manifests para deploy no AKS
 ├── Documentation/              # Documentação do projeto
 ├── .github/                        # Configurações do GitHub Actions para CI/CD
 │
@@ -233,13 +252,13 @@ FCG.Users/
 
 ## 🚀 Pipeline CI/CD
 
-O workflow está definido em `.github/workflows/ci-cd-fcg.yml`. 
+O workflow está definido em `.github/workflows/ci-cd-aks.yml`. 
 Automatizando os seguintes passos:
 
 - Build e testes unitários
 - Build da imagem Docker
 - Push para Azure Container Registry (ACR)
-- MultiStage para Deploy automatizado no Azure Container Apps:
+- MultiStage para Deploy automatizado no Azure Kubernetes Services:
    - DEV
    - UAT (necessário aprovação)
    - PRD (apenas com PR na branch `master` e necessário aprovação)
@@ -253,13 +272,11 @@ O projeto utiliza os seguintes recursos na Azure:
 - **Azure Resource Group**: `RG_FCG`
 - **Azure SQL Database**: `FCG.UsersDB`
 - **Azure Container Registry (ACR)**: `acrfcg.azurecr.io`
-- **Azure Container Apps**:
-  - DEV: `aca-fcg-users-dev` 
-  - UAT: `aca-fcg-users-uat` 
-  - PRD: `aca-fcg-users` 
+- **Azure Kubernetes Services (AKS)**: `aks-fcg-notification`
 - **Azure Api Management**: `apim-fcg`
 - **Azure Service Bus**: `servicebus-fcg`
 - **Azure Functions**: `func-fcg-payments`
+- **RabbitMQ**: `fcg.notification.queue`
 
   - 
 As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
@@ -270,7 +287,7 @@ As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas
 Este projeto utiliza um Dockerfile em duas etapas para garantir uma imagem otimizada e segura:
 
 - **Stage 1 - Build**: Usa a imagem oficial do .NET SDK 8.0 para restaurar dependências, compilar e publicar a aplicação em modo Release.
-- **Stage 2 - Runtime**: Utiliza a imagem mais leve do ASP.NET 8.0 para executar a aplicação, copiando apenas os artefatos publicados da etapa de build, o que reduz o tamanho final da imagem.
+- **Stage 2 - Runtime**: Utiliza a versão alpine (mais leve do ASP.NET 8.0) para executar a aplicação, copiando apenas os artefatos publicados da etapa de build, o que reduz o tamanho final da imagem.
 
 Além disso, o agente do **New Relic** é instalado na imagem de runtime para habilitar monitoramento detalhado da aplicação. As variáveis de ambiente necessárias para a configuração do agente são definidas no Dockerfile, podendo ser sobrescritas via ambiente de execução (ex.: Kubernetes, Azure Container Apps).
 
